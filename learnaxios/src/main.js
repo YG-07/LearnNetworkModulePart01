@@ -36,17 +36,17 @@ axios({
 */
 
 // 并发请求
-axios.all([axios({
-  url:'http://123.207.32.32:8000/home/multidata'
-}),axios({
-  url:'http://123.207.32.32:8000/home/data',
-  params: {
-    type:'sell',
-    page:5
-  }
-})]).then(results => {
-  console.log(results);
-})
+// axios.all([axios({
+//   url:'http://123.207.32.32:8000/home/multidata'
+// }),axios({
+//   url:'http://123.207.32.32:8000/home/data',
+//   params: {
+//     type:'sell',
+//     page:5
+//   }
+// })]).then(results => {
+//   console.log(results);
+// })
 
 //ES6 数组的解构赋值
 // })]).then(([r1,r2]) => {
@@ -54,7 +54,7 @@ axios.all([axios({
 //   console.log(r2);
 // })
 
-// 将数组展开成多个
+// axios.spread将数组展开成多个
 // axios.all([axios({
 //   url:'http://123.207.32.32:8000/home/multidata'
 // }),axios({
@@ -67,3 +67,20 @@ axios.all([axios({
 //   console.log(res1);
 //   console.log(res2);
 // }))
+
+axios.defaults.baseURL = 'http://123.207.32.32:8000'
+axios.defaults.timeout = 5000
+
+// axios.spread将数组展开成多个
+axios.all([axios({
+  url:'/home/multidata'
+}),axios({
+  url:'/home/data',
+  params: {
+    type:'sell',
+    page:5
+  }
+})]).then(axios.spread((res1, res2) => {
+  console.log(res1);
+  console.log(res2);
+}))

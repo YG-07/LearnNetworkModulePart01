@@ -54,4 +54,22 @@ axios.all([axios({..}),axios({..})]).then(results => {..})
 .then(axios.spread((res1, res2) => {..}))
 ```
 
-### 三、
+### 三、axios的配置信息相关
+#### 3.1 axios常见的配置
+1. url（必写）:请求地址
+2. method:请求方法，默认是get
+3. baseURL：会添加到url前（url是绝对地址除外）。
+4. transformRequest：允许我们在请求发送到服务器之前对请求的数据做出一些改动，该选项只适用于以下请求方式：put/post/patch
+5. transformResponse：允许我们在数据传送到then/catch方法之前对数据进行改动
+6. headers：自定义请求头信息（如设置请求头json类型）
+7. params：（只有get请求设置params，其他请求需设置params,即只有get的请求参数位于url后，其他请求参数都在请求体中）params选项是要随请求一起发送的请求参数----一般链接在URL后面
+8. paramsSerializer:查询对象序列化函数function（params）{}
+9. data：是作为一个请求体(request body)而需要被发送的数据，该选项只适用于方法：put/post/patch在浏览器上data只能是FormData, File, Blob格式
+10. timeout：设置请求超时的时间
+11. withCredentials：选项表明了是否是跨域请求、默认是default
+12. onUploadProgress：上传进度事件
+13. onDownloadProgress：下载进度的事件
+14. maxContentLength：相应内容的最大值
+15. responseType:响应的数据格式json/blob/document/arraybuffer/text/stream
+16. adapter:自定义请求处理function(resolve,reject,config)),
+17. auth:身份验证信息,如{uname:'abc',pwd:'123'},
