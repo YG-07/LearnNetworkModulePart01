@@ -32,3 +32,26 @@ axios.post(url[,date[,config]])  axios.put(url[,date[,config]])  axios.patch(url
 #### 2.1 创建项目
 * 项目创建指令：`vue init webpack learnaxios`  
 * 安装axios指令：`npm install axios@0.18.0 --save`  
+#### 2.2 初步使用axios
+* 请求：coderwhy 老师的项目域名：http://123.207.32.32  
+* 在main.js里面导入并使用axios
+```javaScript
+import axios from 'axios'
+axios({
+  url: 'http://123.207.32.32:8000/home/multidata',
+  method: 'get'
+}).then(res => {
+  console.log('Get请求',res);
+})
+```
+#### 2.3 axios发送并发请求
+* 除了直接返回一个**数组**，**ES6数组的解构**和**axios.spread**功能也差不多
+```javaScript
+axios.all([axios({..}),axios({..})]).then(results => {..})
+//ES6 数组的解构赋值 也是Promise.all的then方法
+.then(([res1,res2]) => {..})
+// axios.spread拆解数组，axios.all的then
+.then(axios.spread((res1, res2) => {..}))
+```
+
+### 三、
