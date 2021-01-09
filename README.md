@@ -72,4 +72,82 @@ axios.all([axios({..}),axios({..})]).then(results => {..})
 14. maxContentLength：相应内容的最大值
 15. responseType:响应的数据格式json/blob/document/arraybuffer/text/stream
 16. adapter:自定义请求处理function(resolve,reject,config)),
-17. auth:身份验证信息,如{uname:'abc',pwd:'123'},
+17. auth:身份验证信息,如{uname:'abc',pwd:'123'}
+  
+### 四、axios的实例和封装
+#### 4.1 axios的实例
+* 创建axios的实例，使用**axios.create()**方法  
+```javaScript
+// 创建axios的实例
+const instance1 = axios.create({
+  baseURL: 'http://123.207.32.32:8000',
+  timeout: 5000
+})
+// 用实例进行多个网络请求
+instance1({...}).then(...)
+```
+#### 4.2 axios的封装
+* 方法一：避免直接在组件里导入网络模块，`import axios from 'axios'`，依赖性太强，维护工作量大
+* (正解)在src里创建`network文件夹`，创建`request.js`
+#### 4.3 网络封装的另外2种方案和优化
+(以下代码包括`request.js定义网络请求方法`和`main.js调用代码`)  
+1. 方法二：封装**request方法**，3个参数：`配置对象、成功回调、失败回调`.(此方法传递参数太多，调用时比较复杂)
+```javaScript
+export function request(config, success, failure) {
+  const instance = axios.create({..})
+  instance(config).then(res => success(res)).catch(err => failure(err))
+}
+request({
+  url: '/home'
+}, res => {
+  console.log(res);
+}, err => {
+  console.log(err);
+})
+```
+2. 方法二(优化): 1个参数：`配置对象`(**基本配置**和**回调函数**等).(此方法虽然只用传递一个参数，但定义和使用时的`对象属性要保持一致`,代码量较大，不利于修改)
+```javaScript
+export function request(config) {
+  const instance = axios.create({..})
+  instance(config.baseConfig)
+  .then(res => config.success(res)).catch(err => config.failure(err))
+}
+request({
+  baseConfig: {
+    url: '/home'
+  },
+  success: res => {
+    console.log(res);
+  },
+  failure: err => {
+    console.log(err);
+  }
+})
+```
+3.  方法三：使用ES6的Promise，一个参数：`配置对象`
+```javaScript
+export function request(config) {
+  return new Promise((resolve, reject) => {
+    const instance = axios.create({..})
+    instance(config)
+      .then(res => resolve(res)).catch(err => reject(err))
+  })
+}
+request({
+  url: '/home/multidata'
+}).then(res => {
+  console.log(res);
+}).catch(err => {
+  console.log(err);
+})
+```
+4. **方法三(最终优化)**: **axios.create创建**的对象返回的就是一个**Promise对象**，所以可以**直接返回axios实例**.
+```javaScript
+export function request(config) {
+  const instance = axios.create({..})
+  return instance(config)
+}
+//使用方法同 方法三
+```
+* 总结：创建**network文件夹**，使用一些js文件实现对**axios实例和模块**的封装，而不是直接在组件里使用axios实例. 这样的封装便于网络请求**模块的维护和更改**，在更换框架时不至于对该**框架的过分依赖**，使用**ES6语法的Promise方法**进行调用，`模块再怎么变换，也不用修改调用的代码`.
+
